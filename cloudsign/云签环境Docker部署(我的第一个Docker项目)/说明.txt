@@ -1,0 +1,26 @@
+cd DockerENV
+unzip cloudfonts.zip
+
+
+
+DockerENV                                        Docker镜像包
+
+GX                                                     Docker启动云签所需文件，需放在根目录下
+
+GX/CloudSignPlatform                      云签章程序
+
+GX/GMSeal                                       云签章制作系统程序
+
+GX/Redis                                           Redis配置文件及日志
+
+GX/supervisord                                 supervisord配置文件及日志
+
+
+1、在DockerENV构建Docker镜像
+
+2、使用该镜像挂载GX文件夹启动Docker容器
+
+docker run -itd -v /GX:/GX -p 8003:8003 -p 8004:8004 -p 6379:6379 $image
+
+3、
+ 

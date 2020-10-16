@@ -1,0 +1,18 @@
+创建用户
+CREATE USER 'repl'@'%' IDENTIFIED BY '123456';
+GRANT REPLICATION SLAVE ON *.* TO 'repl'@'%';
+
+查看master状态 
+SHOW MASTER STATUS;
+
+
+停止slave:  stop slave;    重置slave: reset slave;
+
+同步 
+CHANGE MASTER TO MASTER_HOST='172.17.0.5',MASTER_USER='repl',MASTER_PASSWORD='123456',MASTER_LOG_FILE='binlog.000003',MASTER_LOG_POS=156;
+
+启动slave:    
+start slave;
+
+查看slave状态： 
+show slave status\G

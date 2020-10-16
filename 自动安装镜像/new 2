@@ -1,0 +1,12 @@
+virt-install \
+  --name centos7.7 \
+  --memory 2048 \
+  --vcpus 2 \
+  --disk path=/kvm/image/centos7.7.qcow2,size=50 \
+  --location http://192.168.0.108/centos/ \
+  --os-variant centos7.0 \
+  --network bridge:br0 \
+  --graphics=none \
+  --console pty,target_type=serial \
+  -x 'console=ttyS0,115200n8 serial' \
+  -x "ks=http://192.168.0.108/kickstart/ks.cfg"
