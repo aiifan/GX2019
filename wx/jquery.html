@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>jQuery</title>
+</head>
+<body>
+    
+    <div>
+        xxxxxxx
+    </div>
+    <p class="demo">
+        变色
+    </p>
+    <p>xxxxxxx</p>
+    <button id="one">隐藏</button>
+
+    <div class="demo1">
+        我出来了
+    </div>
+    <button id="two" >隐藏</button>
+    <script src="jq.js"></script>
+    <script src="myjQuery.js"></script>
+    <script>
+        $(document).ready(function(){
+            $("#one").click(function(){
+                $("p").hide();
+            });
+        });
+        
+    </script>
+</body>
+</html>

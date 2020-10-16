@@ -1,0 +1,159 @@
+﻿{% load static %}
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <title></title>
+        <link rel="stylesheet" href="{%static 'styles/global.css'%}">
+        <link rel="stylesheet" href="{%static 'styles/global_color.css'%}">
+        <script language="javascript" type="text/javascript">
+
+            //切换资费类型
+            function feeTypeChange(type) {
+                var inputArray = document.getElementById("main").getElementsByTagName("input");
+                if (type == 1) {
+                    inputArray[4].readOnly = true;
+                    inputArray[4].value = "";
+                    inputArray[4].className += " readonly";
+                    inputArray[5].readOnly = false;
+                    inputArray[5].className = "width100";
+                    inputArray[6].readOnly = true;
+                    inputArray[6].className += " readonly";
+                    inputArray[6].value = "";
+                }
+                else if (type == 2) {
+                    inputArray[4].readOnly = false;
+                    inputArray[4].className = "width100";
+                    inputArray[5].readOnly = false;
+                    inputArray[5].className = "width100";
+                    inputArray[6].readOnly = false;
+                    inputArray[6].className = "width100";
+                }
+                else if (type == 3) {
+                    inputArray[4].readOnly = true;
+                    inputArray[4].value = "";
+                    inputArray[4].className += " readonly";
+                    inputArray[5].readOnly = true;
+                    inputArray[5].value = "";
+                    inputArray[5].className += " readonly";
+                    inputArray[6].readOnly = false;
+                    inputArray[6].className = "width100";
+                }
+            }
+        </script>
+    </head>
+    <body>
+        <!--Logo区域开始-->
+        <form action="post">
+            <div id="header">
+                <img src="{%static 'images/logo.png'%}" alt="logo" class="left"/>
+                <a href="{%url 'show_index'%}">[退出]</a>
+            </div>
+            <!--Logo区域结束-->
+            <!--导航区域开始-->
+            <div id="navi">
+                <ul id="menu">
+                    <li><a href="{%url 'show_index'%}" class="index_off"></a></li>
+                    <li><a href="{%url 'show_role'%}" class="role_off"></a></li>
+                    <li><a href="{%url 'show_admin'%}" class="admin_off"></a></li>
+                    <li><a href="{%url 'fee_list'%}" class="fee_on"></a></li>
+                    <li><a href="{% url 'account_list' %}" class="account_off"></a></li>
+                    <li><a href="{% url 'service_list' %}" class="service_off"></a></li>
+                    <li><a href="{% url 'bill_list' %}" class="bill_off"></a></li>
+                    <li><a href="{% url 'report_list' %}" class="report_off"></a></li>
+                    <li><a href="{%url 'user_info'%}" class="information_off"></a></li>
+                    <li><a href="{%url 'user_pwd'%}" class="password_off"></a></li>
+                </ul>
+            </div>
+            <!--导航区域结束-->
+            <!--主要区域开始-->
+            <div id="main">
+                <div id="save_result_info" class="save_fail">添加失败，资费名称重复！</div>
+                <form action="add" method="post" class="main_form">
+                    <div class="text_info clearfix"><span>资费名称：</span></div>
+                    <div class="input_info">
+                        <input type="text" name="pg_name" class="width300" value=""/>
+                        <span class="required">*</span>
+                        <div class="validate_msg_short">50长度的字母、数字、汉字和下划线的组合</div>
+                    </div>
+                    <div class="text_info clearfix"><span>资费类型：</span></div>
+                    <div class="input_info fee_type">
+                        <input type="radio" name="pg_type" value="包月" id="monthly" onclick="feeTypeChange(1);" />
+                        <label for="monthly">包月</label>
+                        <input type="radio" name="pg_type" value="套餐" checked="checked" id="package" onclick="feeTypeChange(2);" />
+                        <label for="package">套餐</label>
+                        <input type="radio" name="pg_type" value="计时" id="timeBased" onclick="feeTypeChange(3);" />
+                        <label for="timeBased">计时</label>
+                    </div>
+                    <div class="text_info clearfix"><span>基本时长：</span></div>
+                    <div class="input_info">
+                        <input type="text"  name="base_length" value="" class="width100" />
+                        <span class="info">小时</span>
+                        <span class="required">*</span>
+                        <div class="validate_msg_long">1-600之间的整数</div>
+                    </div>
+                    <div class="text_info clearfix"><span>基本费用：</span></div>
+                    <div class="input_info">
+                        <input type="text"  name="base_cost" value="" class="width100" />
+                        <span class="info">元</span>
+                        <span class="required">*</span>
+                        <div class="validate_msg_long error_msg">0-99999.99之间的数值</div>
+                    </div>
+                    <div class="text_info clearfix"><span>单位费用：</span></div>
+                    <div class="input_info">
+                        <input type="text" value="" name="company_cost" class="width100" />
+                        <span class="info">元/小时</span>
+                        <span class="required">*</span>
+                        <div class="validate_msg_long error_msg">0-99999.99之间的数值</div>
+                    </div>
+                    <div class="text_info clearfix"><span>资费说明：</span></div>
+                    <div class="input_info_high">
+                        <textarea class="width300 height70" name="pg_explain"></textarea>
+                        <div class="validate_msg_short error_msg">100长度的字母、数字、汉字和下划线的组合</div>
+                    </div>
+                    <div class="button_info clearfix">
+                        <input type="button" value="保存" class="btn_save" />
+                        <a href="{% url 'fl'%}"><input type="button" value="取消" class="btn_save" /></a>
+                    </div>
+                </form>
+            </div>
+            <!--主要区域结束-->
+            <div id="footer">
+                <span>[源自北美的技术，最优秀的师资，最真实的企业环境，最适用的实战项目]</span>
+                <br />
+               <span>版权所有(C)云科技有限公司 </span>
+            </div>
+        </form>
+    </body>
+    <script src="{%static 'js/jquery.min.js'%}"></script>
+    <script src="{%static 'js/csrf.js'%}"></script>
+    <script src="{%static 'js/jquery.min.js'%}"></script>
+    <script src="{%static 'js/jquery.cookie.js'%}"></script>
+    <script src="{% static 'js/powerview.js' %}"></script>
+    <script type="text/javascript">
+        if(!$.cookie('user')){
+            window.location.href = "{%url 'show_login'%}";
+        }
+            $('input[value="保存"]').on('click',function (event) {
+                event.preventDefault();
+                let paras = $('form').serialize();
+                console.log(paras);
+                csrf_yield();
+                $.ajax({
+                    url:'{% url "pg_add" %}',
+                    type:'post',
+                    data: paras,
+                    success:function (res) {
+                        res = JSON.parse(res);
+                        if(res.code ==200){
+                             // $.cookie('pg_type',res.pg_type,{path:'/'})
+                            window.location.href = '{%url "fl"%}';
+                        }else {
+                            document.getElementById("save_result_info").style.display = "block";
+                        }
+                    }
+                });
+            });
+
+    </script>
+</html>

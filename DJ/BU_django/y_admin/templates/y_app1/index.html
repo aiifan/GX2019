@@ -1,0 +1,64 @@
+﻿{%load static%}
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <title></title>
+        <link type="text/css" rel="stylesheet" media="all" href="{%static 'styles/global.css'%}" />
+        <link type="text/css" rel="stylesheet" media="all" href="{%static 'styles/global_color.css'%}" />
+        <style type="text/css">
+            .exit{
+                width: 100px;
+                height: 40px;
+                background: #7aaac6;
+                border: 1px solid #89bdd8;
+                position: fixed;
+                bottom: 17px;
+                right: 60px;
+                z-index: 2;
+                color: white;
+                font-weight: 500;
+                border-radius: 10px;
+                outline: none;
+                font-size: 17px;
+            }
+            .exit:hover{
+                color: black;
+                background: red;
+            }
+        </style>
+    </head>
+    <body class="index">
+        <input type="button" value="注 销" class="exit">
+        <!--导航区域开始-->
+        <div id="index_navi">
+            <ul id="menu">
+                <li><a href="{%url 'show_index'%}" class="index_on"></a></li>
+                <li><a href="{%url 'show_role'%}" class="role_off"></a></li>
+                <li><a href="{%url 'show_admin'%}" class="admin_off"></a></li>
+                <li><a href="{%url 'fee_list'%}" class="fee_off"></a></li>
+                <li><a href="{% url 'account_list' %}" class="account_off"></a></li>
+                <li><a href="{% url 'service_list' %}" class="service_off"></a></li>
+                <li><a href="{% url 'bill_list' %}" class="bill_off"></a></li>
+                <li><a href="{% url 'report_list' %}" class="report_off"></a></li>
+                <li><a href="{%url 'user_info'%}" class="information_off"></a></li>
+                <li><a href="{%url 'user_pwd'%}" class="password_off"></a></li>
+            </ul>
+        </div>
+    </body>
+    <script src="{%static 'js/jquery.min.js'%}"></script>
+    <script src="{%static 'js/csrf.js'%}"></script>
+    <script src="{%static 'js/jquery.cookie.js'%}"></script>
+    <script src="{%static 'js/powerview.js'%}"></script>
+    <script type="text/javascript">
+        if(!$.cookie('user')){
+            window.location.href = "{%url 'show_login'%}"
+        }
+        $('input[value="注 销"]').on('click',function () {
+            let pas = confirm('您确定要注销吗?');
+            if(pas){
+                window.location.href = '{%url "show_login"%}'
+            }
+        })
+    </script>
+</html>

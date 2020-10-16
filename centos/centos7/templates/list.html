@@ -1,0 +1,61 @@
+{% load static %}
+<!-- <!DOCTYPE html> -->
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <title>Document</title>
+</head>
+<body>
+    <h1 id="id1">成功</h1>
+    <table border="1">
+        {% csrf_token %}
+        <tr>
+            <th>id</th>
+            <th>ip地址</th>
+            <th>登录用户</th>
+            <th>是否正常连接</th>
+        </tr>
+    {% for line in obj %}
+        <tr>
+            <td  >{{ line.id }}</td>
+            <td>{{ line.server_ip }}</td>
+            <td>{{ line.server_user }}</td>
+            <!-- <td id="yn">是/否</td> -->
+            <td><button type="submit" id="bytu" serverid="{{ line.id }}">测试是否正常连接</button></td>
+        </tr>
+    {% endfor %}
+    </table>
+</body>
+<script src="{% static 'js/jquery-3.5.1.slim.min.js' %}"></script>
+<!-- <script src="https://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script> -->
+<script type="text/javascript">
+    // $.ajaxSetup({
+    //     data:{csrfmiddlewaretoken:'{#{ csrf_token }#}'}
+    // });
+    $(document).ready(function() {
+        
+        $("button").click(function(){
+            var serverid=$(this).attr('serverid');
+            var data={'serverid':serverid}
+            $.ajax({
+                url: '{% url "exists_connect" %}',
+                type:'post',
+                data:data,
+                success:function(res){
+                    res=JSON.parse(res);
+                    // if (res.code==200){
+                    alert(res.infor)
+                    // };
+                }
+            });
+        });
+    });
+    // function yesno(infor) {
+    //     $(this).
+    // }
+    
+</script>
+
+</html>

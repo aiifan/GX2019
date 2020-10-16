@@ -1,0 +1,207 @@
+﻿{% load static %}
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <title></title>
+        <link rel="stylesheet" href="{% static 'css/global.css' %}">
+        <link rel="stylesheet" href="{% static 'css/global_color.css' %}">
+        <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+        <style type="text/css">
+            .page_ul li {
+                display: inline-block;
+            }
+        </style>
+    </head>
+    <body onload="initialYearAndMonth();">
+        <!--Logo区域开始-->
+        <div id="header">
+            <img src="{% static 'images/logo.png' %}" alt="logo" class="left"/>
+            <a href="{%url 'show_index'%}">[退出]</a>
+        </div>
+        <!--Logo区域结束-->
+        <!--导航区域开始-->
+        <div id="navi">                        
+            <ul id="menu">
+                <li><a href="{%url 'show_index'%}" class="index_off"></a></li>
+                <li><a href="{%url 'show_role'%}" class="role_off"></a></li>
+                <li><a href="{%url 'show_admin'%}" class="admin_off"></a></li>
+                <li><a href="{%url 'fee_list'%}" class="fee_off"></a></li>
+                <li><a href="{% url 'account_list' %}" class="account_off"></a></li>
+                <li><a href="{% url 'service_list' %}" class="service_off"></a></li>
+                <li><a href="{% url 'bill_list' %}" class="bill_on"></a></li>
+                <li><a href="{% url 'report_list' %}" class="report_off"></a></li>
+                <li><a href="{%url 'user_info'%}" class="information_off"></a></li>
+                <li><a href="{%url 'user_pwd'%}" class="password_off"></a></li>
+            </ul>            
+        </div>
+        <!--导航区域结束-->
+        <!--主要区域开始-->
+        <div id="main">
+            <form action="" method="">
+                <!--查询-->
+                <div class="search_add">                        
+                    <div>身份证：<input type="text"  value="" name="ident" class="text_search" /></div>
+                    <div>账务账号：<input type="text" value="" name="account_name" class="width100 text_search" /></div>
+                    <div>姓名：<input type="text" value="" name="nickname" class="width70 text_search" /></div>
+                    <div>
+                        <select class="select_search" name="year" id="selYears">
+                        </select>
+                        年
+                        <select class="select_search" name="month" id="selMonths">
+                        </select>
+                        月
+                    </div>
+                    <div><input type="button" value="搜索" class="btn_search" /></div>
+                </div>  
+                <!--数据区域：用表格展示数据-->     
+                <div id="data">            
+                    <table id="datalist">
+                    <tr>
+                        <th class="width50">账单ID</th>
+                        <th class="width70">姓名</th>
+                        <th class="width150">身份证</th>
+                        <th class="width150">账务账号</th>
+                        <th>费用</th>
+                        <th class="width100">月份</th>
+                        <th class="width100">支付方式</th>
+                        <th class="width100">支付状态</th>                                                        
+                        <th class="width50"></th>
+                    </tr>
+                    {% for ball in balls %}
+                    <tr class="ball">
+                        <td>{{ball.id}}</td>
+                        <td>{{ball.user.nickname}}</td>
+                        <td>{{ball.user.ident}}</td>
+                        <td>{{ball.user.account.account_name}}</td>
+                        <td>{{ball.cost}}</td>
+                        <td>{{ball.month}}</td>
+                        <td>{{ball.pay_method}}</td>
+                        <td>{{ball.pay_code}}</td>
+                        <td><a href="{% url 'bill_item' ball.id %}" title="账单明细">明细</a></td>
+                    </tr>
+                    {% endfor %}
+                </table>
+                
+                <p>业务说明：<br />
+                1、设计支付方式和支付状态，为用户自服务中的支付功能预留；<br />
+                2、只查询近 3 年的账单，即当前年和前两年，如2013/2012/2011；<br />
+                3、年和月的数据由 js 代码自动生成；<br />
+                4、由数据库中的ｊｏｂ每月的月底定时计算账单数据。</p>
+                </div>                    
+                <!--分页-->
+                <div id="pages" class="page_ul">
+                    <!--分页-->
+                    <!--<ul class="page_ul">-->
+                        <li class="item"><a href="{% url 'bill_list' %}?page=1">首页</a></li>
+                        {#上一页按钮开始#}
+                        {# 如果当前页有上一页#}
+                        {% if balls.has_previous %}
+                            {#  当前页的上一页按钮正常使用#}
+                            <li class="previous"><a href="{% url 'bill_list' %}?page={{ balls.previous_page_number }}">上一页</a></li>
+                        {% else %}
+                            {# 当前页的不存在上一页时,上一页的按钮不可用#}
+                            <li class="previous disabled"><a href="#">上一页</a></li>
+                        {% endif %}
+                        {#上一页按钮结束#}
+                        {# 页码开始#}
+                        {% for num in paginator.page_range %}
+
+                            {% if num == currentPage %}
+                                <li><a class="current_page" href="{% url 'bill_list' %}?page={{ num }}">{{ num }}</a></li>
+                            {% else %}
+                                <li><a href="{% url 'bill_list' %}?page={{ num }}">{{ num }}</a></li>
+
+                            {% endif %}
+                        {% endfor %}
+                        {#页码结束#}
+                        {# 下一页按钮开始#}
+                        {% if balls.has_next %}
+                            <li class="next"><a href="{% url 'bill_list' %}?page={{ balls.next_page_number }}">下一页</a></li>
+                        {% else %}
+                            <li class="next disabled"><a href="#">下一页</a></li>
+                        {% endif %}
+                        {# 下一页按钮结束#}
+                        <li class="item"><a href="{% url 'bill_list' %}?page={{ paginator.num_pages }}">末页</a></li>
+                    <!--</ul>-->
+                    <!--<a href="#">首页</a>-->
+        	        <!--<a href="#">上一页</a>-->
+                    <!--<a href="#" class="current_page">1</a>-->
+                    <!--<a href="#">2</a>-->
+                    <!--<a href="#">3</a>-->
+                    <!--<a href="#">4</a>-->
+                    <!--<a href="#">5</a>-->
+                    <!--<a href="#">下一页</a>-->
+                    <!--<a href="#">末页</a>-->
+                </div>                    
+            </form>
+        </div>
+        <!--主要区域结束-->
+        <div id="footer">
+            <p>[源自北美的技术，最优秀的师资，最真实的企业环境，最适用的实战项目]</p>
+            <p>版权所有(C)云科技有限公司 </p>
+        </div>
+    </body>
+    <script src="{% static 'js/jquery-3.3.1.min.js' %}"></script>
+    <script src="{% static 'js/csrf.js' %}"></script>
+    <script src="{%static 'js/jquery.min.js'%}"></script>
+    <script src="{%static 'js/jquery.cookie.js'%}"></script>
+    <script src="{% static 'js/powerview.js' %}"></script>
+    <script>
+        csrf_yield();
+        if(!$.cookie('user')){
+            window.location.href = "{%url 'show_login'%}";
+        }
+        $('.btn_search').on('click', function () {
+            let ident = $('input[name="ident"]').val();
+            let account_name = $('input[name="account_name"]').val();
+            let nickname = $('input[name="nickname"]').val();
+            let year = $("#selYears  option:selected").text();
+            let month = $("#selMonths  option:selected").text();
+            $.ajax({
+                url: '{% url "bill_search" %}',
+                type: 'post',
+                data: {'ident': ident, 'account_name': account_name, 'nickname':nickname, 'year':year, 'month':month},
+                success: function (balls) {
+                    balls = JSON.parse(balls);
+                    $('.ball').css('display', 'none');
+                    for(let i=0;i<balls.balls.length;i++){
+                        let id = balls.balls[i].id;
+                        let url = "{% url 'bill_item' 1 %}".replace('1', id);
+                        let html = `<tr class="ball">
+                        <td>${balls.balls[i].id}</td>
+                        <td>${balls.balls[i].nickname}</td>
+                        <td>${balls.balls[i].ident}</td>
+                        <td>${balls.balls[i].account_name}</td>
+                        <td>${balls.balls[i].cost}</td>
+                        <td>${balls.balls[i].month}</td>
+                        <td>${balls.balls[i].pay_method}</td>
+                        <td>${balls.balls[i].pay_code}</td>
+                        <td><a href="${url}" title="账单明细">明细</a></td>
+                    </tr>`;
+                        $('#datalist').append(html);
+                    }
+                }
+            })
+        });
+
+        //写入下拉框中的年份和月份
+            function initialYearAndMonth() {
+                //写入最近3年
+                var yearObj = document.getElementById("selYears");
+                var year = (new Date()).getFullYear();
+                for (var i = 0; i <= 2; i++) {
+                    var opObj = new Option(year - i, year - i);
+                    yearObj.options[i] = opObj;
+                }
+                //写入 12 月
+                var monthObj = document.getElementById("selMonths");
+                var opObj = new Option("全部", "全部");
+                monthObj.options[0] = opObj;
+                for (var i = 1; i <= 12; i++) {
+                    var opObj = new Option(i, i);
+                    monthObj.options[i] = opObj;
+                }
+            }
+    </script>
+</html>

@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script src="myScript.js"></script>
+    <script>
+        // alert("JavaScript")
+        // document.write("<h1>标题</h1>")
+        // document.writeln("<p>段落</p>")
+        function myFunction() {
+            document.getElementById("demo").innerHTML="javascript函数";
+        }
+
+        document.write(Date())
+        var d = new Date().getDay();
+        console.log(d)
+        switch (d) {
+            case 0:x='星期天';
+                
+                break;
+            case 5:x="星期一";
+                break;
+            default:
+                x="dddd"
+                break;
+        }
+        console.log("今天"+x)
+
+    </script>
+    <p id="demo">段落</p>
+    <div id="id">dicvv</div>
+    <div id="re">jrfdalksnfeorjdmffcvlam12312434532543245312中文dadhfaslk12312432hdsfa打瞌睡的</div>
+    <button type="button" onclick="myFunction()">点击</button>
+    <button type="button" onclick="myFunction1()">哈哈</button>
+    <button type="button" onclick="myFunction2()">正则替换</button>
+    <form action="index.html" >
+        <input type="text" name="name" required>
+        <input type="submit" value="提交">
+    </form>
+
+    <p>局部变量计数</p>
+    <button type="button" onclick="myFunction3()">计数</button>
+    <p id="demo3">0</p>
+    <button type="button" onclick="myFunction4()">信息</button>
+    <p class="demo5">0</p>
+</body>
+</html>

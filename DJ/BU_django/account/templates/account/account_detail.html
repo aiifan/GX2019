@@ -1,0 +1,101 @@
+﻿{% load static %}
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <title>云科技</title>
+        <link rel="stylesheet" href="{% static 'css/global.css' %}">
+        <link rel="stylesheet" href="{% static 'css/global_color.css' %}">
+    </head>
+    <body>
+        <!--主要区域开始-->
+        <div>
+            <form action="" method="" class="main_form">
+                <!--必填项-->
+                <div class="text_info clearfix"><span>账务账号ID：</span></div>
+                <div class="input_info"><input class="account_id" type="text" value="{{user.account.account_id}}" readonly class="readonly" /></div>
+                <div class="text_info clearfix"><span>姓名：</span></div>
+                <div class="input_info"><input type="text" value="{{user.nickname}}" readonly class="readonly" /></div>
+                <div class="text_info clearfix"><span>身份证：</span></div>
+                <div class="input_info">
+                    <input type="text" value="{{user.ident}}" readonly class="readonly" />
+                </div>
+                <div class="text_info clearfix"><span>登录账号：</span></div>
+                <div class="input_info">
+                    <input type="text" value="{{user.osname}}" readonly class="readonly" />
+                </div>                   
+                <div class="text_info clearfix"><span>电话：</span></div>
+                <div class="input_info">
+                    <input type="text" class="width200 readonly" readonly value="{{user.tel}}" />
+                </div>
+                <div class="text_info clearfix"><span>状态：</span></div>
+                <div class="input_info">
+                    <input style="display: none" class="input1" value="{{user.account.state}}">
+                    <select disabled class="select1">
+                        <option>{{user.account.state}}</option>
+                    </select>                        
+                </div>                    
+                <div class="text_info clearfix"><span>开通/暂停/删除时间：</span></div>
+                <div class="input_info"><input type="text" readonly class="readonly" value="{{user.account.state_time}}" /></div>
+
+                <div class="text_info clearfix"><span>上次登录时间：</span></div>
+                <div class="input_info"><input type="text" readonly class="readonly" value="{{user.account.prev_time}}" /></div>
+                <div class="text_info clearfix"><span>上次登录IP：</span></div>
+                <div class="input_info"><input type="text" readonly class="readonly" value="{{user.account.prev_ip}}" /></div>
+                <!--可选项数据-->
+                <div class="text_info clearfix"><span>生日：</span></div>
+                <div class="input_info">
+                    <input type="text" readonly class="readonly" value="{{user.birth}}" />
+                </div>
+                <div class="text_info clearfix"><span>Email：</span></div>
+                <div class="input_info">
+                    <input type="text" class="width350 readonly" readonly value="{{user.Email}}" />
+                </div> 
+                <div class="text_info clearfix"><span>职业：</span></div>
+                <div class="input_info">
+                    <input type="text" style="display:none;" class="input2" value="{{user.occupation}}">
+                    <select disabled>
+                        <option>{{user.occupation}}</option>
+                    </select>                        
+                </div>
+                <div class="text_info clearfix"><span>性别：</span></div>
+                <div class="input_info fee_type">
+                    <input type="text" style="display:none;" class="input3" value="{{user.sex}}">
+                    <input type="radio" name="radSex" class="sex1" checked="checked" id="female" disabled />
+                    <label for="female">女</label>
+                    <input type="radio" name="radSex" class="sex2" id="male" disabled />
+                    <label for="male">男</label>
+                </div> 
+                <div class="text_info clearfix"><span>通信地址：</span></div>
+                <div class="input_info"><input type="text" class="width350 readonly" readonly value="{{user.addr}}" /></div>
+                <div class="text_info clearfix"><span>邮编：</span></div>
+                <div class="input_info"><input type="text" class="readonly" readonly value="{{user.youbian}}" /></div>
+                <div class="text_info clearfix"><span>QQ：</span></div>
+                <div class="input_info"><input type="text" class="readonly" readonly value="{{user.qq}}" /></div>
+                <!--操作按钮-->
+                <div class="button_info clearfix">
+                    <a href="javascript:history.go(-1);location.reload()"><input type="button" value="返回" class="btn_save" /></a>
+                </div>
+            </form>  
+        </div>
+        <!--主要区域结束-->
+        <div id="footer">
+            <span>[源自北美的技术，最优秀的师资，最真实的企业环境，最适用的实战项目]</span>
+            <br />
+            <span>版权所有(C)云科技有限公司 </span>
+        </div>
+    <script src="{% static 'js/jquery-3.3.1.min.js' %}"></script>
+    <script src="{% static 'js/powerview.js' %}"></script>
+    <script src="{%static 'js/jquery.min.js'%}"></script>
+    <script src="{%static 'js/jquery.cookie.js'%}"></script>
+    <script>
+        if($('.input3').val() === '男') {
+            $('.sex2').attr('checked','checked');
+            $('.sex1').attr('checked');
+        }else {
+            $('.sex1').attr('checked','checked');
+            $('.sex2').attr('checked');
+        }
+    </script>
+    </body>
+</html>

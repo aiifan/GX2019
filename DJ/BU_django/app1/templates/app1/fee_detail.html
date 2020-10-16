@@ -1,0 +1,124 @@
+﻿{% load static %}
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <title></title>
+        <link rel="stylesheet" href="{%static 'styles/global.css'%}">
+        <link rel="stylesheet" href="{%static 'styles/global_color.css'%}">
+    </head>
+    <body>
+    <form action="" method="post">
+        <!--Logo区域开始-->
+        <div id="header">
+            <img src="{%static 'images/logo.png'%}" alt="logo" class="left"/>
+            <a href="{%url 'show_index'%}">[退出]</a>
+        </div>
+        <!--Logo区域结束-->
+        <!--导航区域开始-->
+        <div id="navi">
+            <ul id="menu">
+                <li><a href="{%url 'show_index'%}" class="index_off"></a></li>
+                <li><a href="{%url 'show_role'%}" class="role_off"></a></li>
+                <li><a href="{%url 'show_admin'%}" class="admin_off"></a></li>
+                <li><a href="{%url 'fee_list'%}" class="fee_on"></a></li>
+                <li><a href="{% url 'account_list' %}" class="account_off"></a></li>
+                <li><a href="{% url 'service_list' %}" class="service_off"></a></li>
+                <li><a href="{% url 'bill_list' %}" class="bill_off"></a></li>
+                <li><a href="{% url 'report_list' %}" class="report_off"></a></li>
+                <li><a href="{%url 'user_info'%}" class="information_off"></a></li>
+                <li><a href="{%url 'user_pwd'%}" class="password_off"></a></li>
+            </ul>
+        </div>
+        <!--导航区域结束-->
+        <!--主要区域开始-->
+        <div id="main">            
+            <form action="" method="" class="main_form">
+                <div class="text_info clearfix"><span>资费ID：</span></div>
+                <div class="input_info"><input type="text" class="readonly" readonly value="{{pos.id}}" /></div>
+                <div class="text_info clearfix"><span>资费名称：</span></div>
+                <div class="input_info"><input type="text" class="readonly" readonly value="{{pos.pg_name}}"/></div>
+                <div class="text_info clearfix"><span>资费状态：</span></div>
+                <div class="input_info">
+                    <select class="readonly" disabled>
+                        <option>{{ pos.pg_code }}</option>
+                    </select>                        
+                </div>
+                <div class="text_info clearfix"><span>资费类型：</span></div>
+                <input id="zaiti" type="text" style="display: none" value="{{pos.pg_type}}">
+                <div class="input_info fee_type type">
+                    <input type="radio" name="radFeeType"  value="包月" id ="monthly" disabled="disabled" />
+                    <label for="monthly" class="ass">包月</label>
+                    <input type="radio" name="radFeeType"  value="套餐" id="package" disabled="disabled" />
+                    <label for="package" class="as">套餐</label>
+                    <input type="radio" name="radFeeType" value="计时" id="timeBased" disabled="disabled" />
+                    <label for="timeBased" class="as">计时</label>
+                </div>
+                <div class="text_info clearfix"><span>基本时长：</span></div>
+                <div class="input_info">
+                    <input type="text" class="readonly" readonly value="{{pos.base_length}}"  />
+                    <span>小时</span>
+                </div>
+                <div class="text_info clearfix"><span>基本费用：</span></div>
+                <div class="input_info">
+                    <input type="text"  class="readonly" readonly value="{{pos.base_cost}}" />
+                    <span>元</span>
+                </div>
+                <div class="text_info clearfix"><span>单位费用：</span></div>
+                <div class="input_info">
+                    <input type="text"  class="readonly" readonly value="{{pos.company_cost}}" />
+                    <span>元/小时</span>
+                </div>
+                <div class="text_info clearfix"><span>创建时间：</span></div>
+                <div class="input_info"><input type="text"  class="readonly" readonly value="{{pos.create_time}}" /></div>
+                <div class="text_info clearfix"><span>启动时间：</span></div>
+                <div class="input_info"><input type="text"  class="readonly" readonly value="{{pos.use_time}}" /></div>
+                <div class="text_info clearfix"><span>资费说明：</span></div>
+                <div class="input_info_high">
+                    <textarea class="width300 height70 readonly" readonly>{{pos.pg_explain}}</textarea>
+                </div>                    
+                <div class="button_info clearfix">
+                    <input type="button" value="返回" class="btn_save" onclick="javascript:history.back(-1);"/>
+                </div>
+            </form>  
+        </div>
+        <!--主要区域结束-->
+        <div id="footer">
+            <span>[源自北美的技术，最优秀的师资，最真实的企业环境，最适用的实战项目]</span>
+            <br />
+            <span>版权所有(C)云科技有限公司 </span>
+        </div>
+    </form>
+    </body>
+    <script src="{%static 'js/jquery.min.js'%}"></script>
+    <script src="{%static 'js/csrf.js'%}"></script>
+    <script src="{%static 'js/jquery.min.js'%}"></script>
+    <script src="{%static 'js/jquery.cookie.js'%}"></script>
+    <script src="{% static 'js/powerview.js' %}"></script>
+    <script type="text/javascript">
+        if(!$.cookie('user')){
+            window.location.href = "{%url 'show_login'%}";
+        }
+        // 修改状态
+        get_type();
+        function get_type() {
+            let type = $('.type input');
+            let name = $('#zaiti').val();
+            console.log(name);
+            for(let i=0;i<type.length;i++) {
+                type.eq(i).removeAttr('checked');
+            }
+            for(let i=0;i<type.length;i++) {
+                if(type.eq(i).val() === name) {
+                    type.eq(i).attr('checked','checked');
+                }
+            }
+        }
+
+
+
+        // $('.btn_save').on('click', function () {
+        //     window.location.href = '{% url "fl" %}';
+        // });
+    </script>
+</html>

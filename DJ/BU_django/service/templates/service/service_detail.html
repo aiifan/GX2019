@@ -1,0 +1,60 @@
+﻿{% load static %}
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <title></title>
+        <link rel="stylesheet" href="{% static 'css/global.css' %}">
+        <link rel="stylesheet" href="{% static 'css/global_color.css' %}">
+        <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+    </head>
+    <body>
+        <!--主要区域开始-->
+        <div>
+            <form action="" method="" class="main_form">
+                <!--必填项-->
+                <div class="text_info clearfix"><span>业务账号ID：</span></div>
+                <div class="input_info"><input type="text" value="{{business.id}}" readonly class="readonly" /></div>
+                <div class="text_info clearfix"><span>账务账号ID：</span></div>
+                <div class="input_info"><input type="text" value="{{business.account.account_id}}" readonly class="readonly" /></div>
+                <div class="text_info clearfix"><span>客户姓名：</span></div>
+                <div class="input_info"><input type="text" readonly class="readonly" value="{{business.user.nickname}}" /></div>
+                <div class="text_info clearfix"><span>身份证号码：</span></div>
+                <div class="input_info"><input type="text" readonly class="readonly" value="{{business.user.ident}}" /></div>
+                <div class="text_info clearfix"><span>服务器 IP：</span></div>
+                <div class="input_info"><input type="text" value="{{business.user.osip}}" readonly class="readonly" /></div>
+                <div class="text_info clearfix"><span>OS 账号：</span></div>
+                <div class="input_info"><input type="text" value="{{business.user.osname}}" readonly class="readonly" /></div>
+                <div class="text_info clearfix"><span>状态：</span></div>
+                <div class="input_info">
+                    <select disabled>
+                        <option>{{business.statue}}</option>
+                    </select>                        
+                </div>
+                <div class="text_info clearfix"><span>开通时间：</span></div>
+                <div class="input_info"><input type="text" readonly class="readonly" value="{{business.create_time}}"/></div>
+                <div class="text_info clearfix"><span>资费 ID：</span></div>
+                <div class="input_info"><input type="text" class="readonly" readonly value="{{business.postage.id}}"/></div>
+                <div class="text_info clearfix"><span>资费名称：</span></div>
+                <div class="input_info"><input type="text" value="{{business.postage.pg_name}}" readonly class="width200 readonly" /></div>
+                <div class="text_info clearfix"><span>资费说明：</span></div>
+                <div class="input_info_high">
+                    <textarea class="width300 height70 readonly" readonly>{{business.postage.pg_explain}}</textarea>
+                </div>  
+                <!--操作按钮-->
+                <div class="button_info clearfix">
+                    <a href="javascript:history.go(-1);location.reload()"><input type="button" value="返回" class="btn_save" /></a>
+                </div>
+            </form>
+        </div>
+        <!--主要区域结束-->
+        <div id="footer">
+            <span>[源自北美的技术，最优秀的师资，最真实的企业环境，最适用的实战项目]</span>
+            <br />
+             <span>版权所有(C)云科技有限公司 </span>
+        </div>
+    <script src="{%static 'js/jquery.min.js'%}"></script>
+    <script src="{%static 'js/jquery.cookie.js'%}"></script>
+    <script src="{% static 'js/powerview.js' %}"></script>
+    </body>
+</html>

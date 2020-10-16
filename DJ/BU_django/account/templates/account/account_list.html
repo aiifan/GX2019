@@ -1,0 +1,318 @@
+﻿{% load static %}
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <title>云科技</title>
+        <link rel="stylesheet" href="{% static 'css/global.css' %}">
+        <link rel="stylesheet" href="{% static 'css/global_color.css' %}">
+        <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+        <style type="text/css">
+            .page_ul li {
+                display: inline-block;
+            }
+
+        </style>
+    </head>
+    <body>
+        <!--Logo区域开始-->
+        <div id="header">
+            <img src="{% static 'images/logo.png' %}" alt="logo" class="left"/>
+            <a href="{%url 'show_index'%}">[退出]</a>
+        </div>
+        <!--Logo区域结束-->
+        <!--导航区域开始-->
+        <div id="navi">                        
+            <ul id="menu">
+                <li><a href="{%url 'show_index'%}" class="index_off"></a></li>
+                <li><a href="{%url 'show_role'%}" class="role_off"></a></li>
+                <li><a href="{%url 'show_admin'%}" class="admin_off"></a></li>
+                <li><a href="{%url 'fee_list'%}" class="fee_off"></a></li>
+                <li><a href="{% url 'account_list' %}" class="account_on"></a></li>
+                <li><a href="{% url 'service_list' %}" class="service_off"></a></li>
+                <li><a href="{% url 'bill_list' %}" class="bill_off"></a></li>
+                <li><a href="{% url 'report_list' %}" class="report_off"></a></li>
+                <li><a href="{%url 'user_info'%}" class="information_off"></a></li>
+                <li><a href="{%url 'user_pwd'%}" class="password_off"></a></li>
+            </ul>            
+        </div>
+        <!--导航区域结束-->
+        <!--主要区域开始-->
+        <div id="main">
+            <form action="" method="">
+                <!--查询-->
+                <div class="search_add">
+                    <div>身份证：<input type="text" value="不验证" name="ident" class="text_search" /></div>
+                    <div>姓名：<input type="text" class="width70 text_search" name="name" value="不验证" /></div>
+                    <div>登录名：<input type="text"  value="不验证" name="osname" class="text_search" /></div>
+                    <div>
+                        状态：
+                        <select class="select_search" name="state">
+                            <option>全部</option>
+                            <option>开通</option>
+                            <option>暂停</option>
+                            <option>删除</option>
+                        </select>
+                    </div>
+                    <div><input type="button" value="搜索" class="btn_search" /></div>
+                    <input type="button" value="增加" style="width: 59px" class="btn_add" />
+                </div>
+                <!--删除等的操作提示-->
+                <div id="operate_result_info" class="operate_success">
+                    <img src="{% static 'images/close.png' %}" onclick="this.parentNode.style.display='none';" />
+                    删除成功，且已删除其下属的业务账号！
+                </div>   
+                <!--数据区域：用表格展示数据-->     
+                <div id="data">            
+                    <table id="datalist">
+                    <tr>
+                        <th>账号ID</th>
+                        <th>姓名</th>
+                        <th class="width150">身份证</th>
+                        <th>登录名</th>
+                        <th>状态</th>
+                        <th class="width100">创建日期</th>
+                        <th class="width150">上次登录时间</th>                                                        
+                        <th class="width200"></th>
+                    </tr>
+                    {% for user in users %}
+                        <tr class="main_data">
+                            <td>{{ user.id }}</td>
+                            <td><a onclick="click1('{{ user.nickname }}')" style="color: blue; text-decoration: underline;cursor: pointer">{{ user.nickname }}</a></td>
+                            <td>{{ user.ident }}</td>
+                            <td>{{ user.osname }}</td>
+                            <td>{{ user.account.state }}</td>
+                            <td>{{ user.account.state_time }}</td>
+                            <td>{{ user.account.prev_time }}</td>
+                            <td class="td_modi">
+                                <input type="button" value="暂停" class="btn_pause" onclick="pause(this, '{{ user.nickname }}')"/>
+                                <input type="button" value="修改" class="btn_modify" onclick="update('{{ user.nickname }}')"/>
+                                <input type="button" value="删除" class="btn_delete" onclick="btn_delete(this, '{{ user.nickname }}')"/>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </table>
+                <p>业务说明：<br />
+                1、创建则开通，记载创建时间；<br />
+                2、暂停后，记载暂停时间；<br />
+                3、重新开通后，删除暂停时间；<br />
+                4、删除后，记载删除时间，标示为删除，不能再开通、修改、删除；<br />
+                5、暂停账务账号，同时暂停下属的所有业务账号；<br />                
+                6、暂停后重新开通账务账号，并不同时开启下属的所有业务账号，需要在业务账号管理中单独开启；<br />
+                7、删除账务账号，同时删除下属的所有业务账号。</p>
+                </div>
+                <div id="pages" class="page_ul">
+                    <!--分页-->
+                    <!--<ul class="pagination" id="pager">-->
+                        <li class="item"><a href="{% url 'account_list' %}?page=1">首页</a></li>
+                        {#上一页按钮开始#}
+                        {# 如果当前页有上一页#}
+                        {% if users.has_previous %}
+                            {#  当前页的上一页按钮正常使用#}
+                            <li class="previous"><a href="{% url 'account_list' %}?page={{ users.previous_page_number }}">上一页</a></li>
+                        {% else %}
+                            {# 当前页的不存在上一页时,上一页的按钮不可用#}
+                            <li class="previous disabled"><a href="#">上一页</a></li>
+                        {% endif %}
+                        {#上一页按钮结束#}
+                        {# 页码开始#}
+                        {% for num in paginator.page_range %}
+
+                            {% if num == currentPage %}
+                                <li class="item active"><a class="current_page" href="{% url 'account_list' %}?page={{ num }}">{{ num }}</a></li>
+                            {% else %}
+                                <li class="item"><a href="{% url 'account_list' %}?page={{ num }}">{{ num }}</a></li>
+
+                            {% endif %}
+                        {% endfor %}
+                        {#页码结束#}
+                        {# 下一页按钮开始#}
+                        {% if users.has_next %}
+                            <li class="next"><a href="{% url 'account_list' %}?page={{ users.next_page_number }}">下一页</a></li>
+                        {% else %}
+                            <li class="next disabled"><a href="#">下一页</a></li>
+                        {% endif %}
+                        {# 下一页按钮结束#}
+                        <li class="item"><a href="{% url 'account_list' %}?page={{ paginator.num_pages }}">末页</a></li>
+                    <!--</ul>-->
+                    <!--<a href="#">首页</a>-->
+        	        <!--<a href="#">上一页</a>-->
+                    <!--<a href="#" class="current_page">1</a>-->
+                    <!--<a href="#">2</a>-->
+                    <!--<a href="#">3</a>-->
+                    <!--<a href="#">4</a>-->
+                    <!--<a href="#">5</a>-->
+                    <!--<a href="#">下一页</a>-->
+                    <!--<a href="#">末页</a>-->
+                </div>                    
+            </form>
+        </div>
+        <!--主要区域结束-->
+        <div id="footer">
+            <p>[源自北美的技术，最优秀的师资，最真实的企业环境，最适用的实战项目]</p>
+            <p>版权所有(C)云科技有限公司 </p>
+        </div>
+    <script src="{% static 'js/jquery-3.3.1.min.js' %}"></script>
+    <script src="{% static 'js/csrf.js' %}"></script>
+    <script src="{% static 'js/jqPaginator.js' %}"></script>
+    <script src="{% static 'js/show.js' %}"></script>
+    <script src="{%static 'js/jquery.min.js'%}"></script>
+    <script src="{%static 'js/jquery.cookie.js'%}"></script>
+    <script src="{% static 'js/powerview.js' %}"></script>
+    <script>
+        csrf_yield();
+        run_image();
+        if(!$.cookie('user')){
+            window.location.href = "{%url 'show_login'%}";
+        }
+        // 搜索
+        $('.btn_search').on('click', function () {
+            // $('.search_add div input[type="text"]').each(function (a, b) {
+            //     console.log($(this).attr('name'));
+            // })
+            let ident = $('.search_add input').eq(0).val();
+            let nickname = $('.search_add input').eq(1).val();
+            let osname = $('.search_add input').eq(2).val();
+            let state = $(".select_search  option:selected").text();
+            $.ajax({
+                url: '{% url "account_search" %}',
+                type: 'post',
+                data: {'ident':ident, 'nickname':nickname, 'osname':osname, 'state':state},
+                success:function (ev) {
+                    ev = JSON.parse(ev);
+                    if(ev.code===200) {
+                        $('.main_data').css('display', 'none');
+                        for(let i=0;i<ev.users.length;i++) {
+                            let user = ev.users[i];
+                            html = yield_html(user);
+                            $('#datalist').append(html);
+                            run_image();
+                        }
+                    }
+                }
+            })
+        });
+        run_image();
+        function yield_html(user) {
+            html = `
+            <tr class="main_data">
+                <td>${user.id}</td>
+                <td><a onclick="click1('${user.nickname}')" style="color: blue; text-decoration: underline;cursor: pointer">${user.nickname}</a></td>
+                <td>${user.ident}</td>
+                <td>${user.osname}</td>
+                <td>${user.state}</td>
+                <td>${user.create_time}</td>
+                <td>${ user.prev_time }</td>
+                <td class="td_modi">
+                    <input type="button" value="暂停" class="btn_pause" onclick="pause(this, '${ user.nickname }')"/>
+                    <input type="button" value="修改" class="btn_modify" onclick="update('${ user.nickname }')"/>
+                    <input type="button" value="删除" class="btn_delete" onclick="btn_delete(this, '${ user.nickname }')"/>
+                </td>
+            </tr>`;
+            return html;
+        }
+
+        run_image();
+        function  update(nickname) {
+            let url1 = '{% url "account_update" 111 %}';
+            let url = url1.replace('111', nickname);
+            $('#main').load(url);
+        }
+        function click1(nickname) {
+            let url1 = '{% url "account_detail" 111 %}';
+            let url = url1.replace('111', nickname);
+            $('#main').load(url);
+        }
+
+        // 增加功能按钮实现
+        $('.btn_add').on('click', function () {
+            $('#main').load('{% url "account_add" %}');
+        });
+
+        run_image();
+        //删除
+        function btn_delete(ths, nickname) {
+            let r = window.confirm("确定要删除此账务账号吗？\r\n删除后将不能恢复，且会删除其下属的所有业务账号。");
+            if(r) {
+                $.ajax({
+                    url: '{% url "delete_code" %}',
+                    type: 'post',
+                    data: {'nickname': nickname},
+                    success:function (ev) {
+                        ev = JSON.parse(ev);
+                        if(ev.code===200) {
+                            $(ths).parent().parent().children().eq(4).html('删除');
+                            $(ths).parent().parent().children().eq(5).html(ev.time);
+                            $(ths).parent().css('display', 'none');
+                            alert('删除成功');
+                        }
+                    }
+                })
+            }
+        }
+        csrf_yield();
+        // 开通暂停添加图片
+        run_image();
+        function run_image() {
+            for(let i=0;i<$('.btn_pause').length; i++) {
+                let txt = $('.btn_pause').eq(i).parent().parent().children().eq(4).html();
+                if(txt==='开通') {
+                    let img1 = '{% static "images/start.png" %}';
+                    let img = 'url(1)'.replace('1', img1);
+                    $('.btn_pause').eq(i).css({'background-image':img});
+                }else if(txt==='暂停'){
+                    let img1 = '{% static "images/pause.png" %}';
+                    let img = 'url(1)'.replace('1', img1);
+                    $('.btn_pause').eq(i).css({'background-image':img});
+                }else{
+                    $('.btn_pause').eq(i).parent().children().css('display', 'none');
+                }
+            }
+        }
+
+        //开通或暂停
+        function pause(ths, nickname) {
+            let r;
+            let state = $(ths).parent().parent().children().eq(4).html();
+            if(state==='开通'){
+                r = window.confirm("确定要暂停此账务账号吗？");
+            }else {
+                r = window.confirm("确定要开通此账务账号吗？");
+            }
+            if(r){
+                $.ajax({
+                    url: '{% url "update_code" %}',
+                    type: 'post',
+                    data: {'state':state, 'nickname': nickname},
+                    success:function (ev) {
+                        ev = JSON.parse(ev);
+                        if(ev.code === 200) {
+                            $(ths).parent().parent().children().eq(4).html(ev.state);
+                            $(ths).parent().parent().children().eq(5).html(ev.time);
+                            if(ev.state==='开通') {
+                                let img1 = '{% static "images/start.png" %}';
+                                let img = 'url(1)'.replace('1', img1);
+                                $(ths).css({'background-image':img});
+                            }else {
+                                let img1 = '{% static "images/pause.png" %}';
+                                let img = 'url(1)'.replace('1', img1);
+                                $(ths).css({'background-image':img});
+                            }
+                            alert('状态更新成功');
+                            // window.location.href = '{% url "account_list" %}';
+                        }else {
+                            alert('状态更新失败');
+                        }
+                    }
+                })
+            }
+        }
+        run_image();
+        function setState() {
+            var r = window.confirm("确定要开通此账务账号吗？");
+            document.getElementById("operate_result_info").style.display = "block";
+        }
+
+    </script>
+    </body>
+</html>

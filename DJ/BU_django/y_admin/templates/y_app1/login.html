@@ -1,0 +1,91 @@
+﻿{%load static%}
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <title></title>
+        <style type="text/css">
+            .code {
+                width: 80px;
+				font-style: italic;
+				font-weight: bold;
+				border: 0;
+				letter-spacing: 3px;
+				color: blue;
+                margin-left: 15px;
+                font-size: 15px;
+			}
+        </style>
+        <link type="text/css" rel="stylesheet" media="all" href="{%static 'styles/global.css'%}" />
+        <link type="text/css" rel="stylesheet" media="all" href="{%static 'styles/global_color.css'%}" />
+    </head>
+    <body class="index">
+        <div class="login_box">
+            <table>
+                <tr>
+                    <td class="login_info">账号：</td>
+                    <td colspan="2"><input name="username" type="text" class="width150" /></td>
+                    <td class="login_error_info"><span style="font-size: 13px"  class="required">* 30长度的字母、数字和下划线</span></td>
+                </tr>
+                <tr>
+                    <td class="login_info">密码：</td>
+                    <td colspan="2"><input name="password" type="password" class="width150" /></td>
+                    <td><span style="font-size: 13px" class="required">* 30长度的字母、数字和下划线</span></td>
+                </tr>
+                <tr>
+                    <td class="login_info">验证码：</td>
+                    <td class="width70"><input name="codex" type="text" class="width70" /></td>
+                    <td><a href="#" onclick="createCode()">
+                <input type="button" id="checkCode" class="code" onclick="createCode()" />
+            </a></td>
+                    <td style="display: none" class="auth_code"><span class="required">*验证码错误</span></td>
+                </tr>            
+                <tr>
+                    <td></td>
+                    <td class="login_button" colspan="2">
+                        <a class="login" href="#"><img src="{%static 'images/login_btn.png'%}" /></a>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </body>
+    <script src="{%static 'js/jquery.min.js'%}"></script>
+    <script src="{%static 'js/csrf.js'%}"></script>
+    <script src="{%static 'js/jquery.cookie.js'%}"></script>
+    <script src="{%static 'js/codex.js'%}"></script>
+    <script type="text/javascript">
+        $('.login').on('click',function (event) {
+            event.preventDefault();
+            csrf_yield();
+            var inputCode = $("input[name='codex']").val().toUpperCase();
+            let paras = 'username='+$('input[name="username"]').val()+'&password='+$('input[name="password"]').val()+'&codex='+inputCode+'&code='+code;
+            $.ajax({
+                url:'{%url "login_data"%}',
+                type:'post',
+                data:paras,
+                success:function (res) {
+                    res = JSON.parse(res);
+                    if(res.code==200){
+                        $.cookie('user', res.user, {path:'/'});
+                        $.cookie('role', res.role, {path:'/'});
+                        window.location.href = '{%url "show_index"%}'
+                    }else if(res.code==300){
+                        alert(res.error)
+                    }else if(res.code==400){
+                        alert(res.error)
+                    }else if(res.code==402){
+                        $('.auth_code span').html(res.error);
+                        $('.auth_code').css({
+                            display:'block'
+                        })
+                    }else {
+                        $('.auth_code span').html(res.error);
+                        $('.auth_code').css({
+                            display:'block'
+                        })
+                    }
+                }
+            });
+        });
+    </script>
+</html>

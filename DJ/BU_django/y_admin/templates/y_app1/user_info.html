@@ -1,0 +1,138 @@
+﻿{%load static%}
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <title></title>
+        <link type="text/css" rel="stylesheet" media="all" href="{%static 'styles/global.css'%}" />
+        <link type="text/css" rel="stylesheet" media="all" href="{%static 'styles/global_color.css'%}" />
+        <script language="javascript" type="text/javascript">
+            //保存成功的提示信息
+            function showResult() {
+                showResultDiv(true);
+                window.setTimeout("showResultDiv(false);", 3000);
+            }
+            function showResultDiv(flag) {
+                var divResult = document.getElementById("save_result_info");
+                if (flag)
+                    divResult.style.display = "block";
+                else
+                    divResult.style.display = "none";
+            }
+        </script>
+    </head>
+    <body>
+        <!--Logo区域开始-->
+        <div id="header">
+            <img src="{%static 'images/logo.png'%}" alt="logo" class="left"/>
+            <a href="{%url 'show_index'%}">[退出]</a>
+        </div>
+        <!--Logo区域结束-->
+        <!--导航区域开始-->
+        <div id="navi">                        
+            <ul id="menu">
+                <li><a href="{%url 'show_index'%}" class="index_off"></a></li>
+                <li><a href="{%url 'show_role'%}" class="role_off"></a></li>
+                <li><a href="{%url 'show_admin'%}" class="admin_off"></a></li>
+                <li><a href="{%url 'fee_list'%}" class="fee_off"></a></li>
+                <li><a href="{% url 'account_list' %}" class="account_off"></a></li>
+                <li><a href="{% url 'service_list' %}" class="service_off"></a></li>
+                <li><a href="{% url 'bill_list' %}" class="bill_off"></a></li>
+                <li><a href="{% url 'report_list' %}" class="report_off"></a></li>
+                <li><a href="{%url 'user_info'%}" class="information_on"></a></li>
+                <li><a href="{%url 'user_pwd'%}" class="password_off"></a></li>
+            </ul>
+        </div>
+        <!--导航区域结束-->
+        <!--主要区域开始-->
+        <div id="main">            
+            <!--保存操作后的提示信息：成功或者失败-->
+            <div id="save_result_info" class="save_success"></div><!--保存失败，数据并发错误！-->
+            <form action=""  class="main_form">
+                {%csrf_token%}
+                <div class="text_info clearfix"><span>管理员账号：</span></div>
+                <div class="input_info"><input name="username" type="text" readonly="readonly" class="readonly" value="" /></div>
+                <div class="text_info clearfix"><span>角色：</span></div>
+                <div class="input_info">
+                    <input name="role" type="text" readonly="readonly" class="readonly width400" value="" />
+                </div>
+                <div class="text_info clearfix"><span>姓名：</span></div>
+                <div class="input_info">
+                    <input name="nickname" type="text" value="" />
+                    <span class="required">*</span>
+                    <span style="border: 1px solid red; color: red;padding: 5px 200px 5px 5px" class="validate_msg_long error_msg">20长度以内的汉字、字母的组合</span>
+                </div>
+                <div class="text_info clearfix"><span>电话：</span></div>
+                <div class="input_info">
+                    <input name="phone" type="text" class="width200" value="" />
+                    <div class="validate_msg_medium">电话号码格式：手机或固话</div>
+                </div>
+                <div class="text_info clearfix"><span>Email：</span></div>
+                <div class="input_info">
+                    <input name="email" type="text" class="width200" value="" />
+                    <div class="validate_msg_medium">50长度以内，符合 email 格式</div>
+                </div>
+                <div class="text_info clearfix"><span>创建时间：</span></div>
+                <div class="input_info"><input name="ctime" type="text" readonly="readonly" class="readonly" value=""/></div>
+                <div class="button_info clearfix">
+                    <input type="button" value="保存" class="btn_save" onclick="showResult();" />
+                    <input type="button" value="取消" class="btn_save" />
+                </div>
+            </form>  
+        </div>
+        <!--主要区域结束-->
+        <div id="footer">
+            <p>[源自北美的技术，最优秀的师资，最真实的企业环境，最适用的实战项目]</p>            
+            <p>版权所有(C)云科技有限公司 </p>
+        </div>
+    </body>
+    <script src="{%static 'js/jquery.min.js'%}"></script>
+    <script src="{%static 'js/csrf.js'%}"></script>
+    <script src="{%static 'js/jquery.cookie.js'%}"></script>
+    <script src="{%static 'js/powerview.js'%}"></script>
+    <script type="text/javascript">
+        if(!$.cookie('user')){
+        window.location.href = "{%url 'show_login'%}"
+        }
+        $.ajax({
+            url:'{%url "show_user"%}',
+            type:'post',
+            data:"user="+$.cookie('user'),
+            success:function (res) {
+                res = JSON.parse(res);
+                if(res.code==200){
+                    $('input[name="username"]').val(res.infor.username);
+                    $('input[name="role"]').val(res.infor.role);
+                    $('input[name="nickname"]').val(res.infor.nickname);
+                    $('input[name="phone"]').val(res.infor.phone);
+                    $('input[name="email"]').val(res.infor.email);
+                    $('input[name="ctime"]').val(res.infor.ctime);
+                }
+            }
+        });
+        $('input[value="保存"]').on('click',function (event) {
+            event.preventDefault();
+            let paras = $('form').serialize();
+            paras += "&user="+$.cookie('user');
+            $.ajax({
+                url:'{%url "user_update"%}',
+                type:'post',
+                data:paras,
+                success:function (res) {
+                    res = JSON.parse(res);
+                    console.log(res)
+                    if(res.code==200){
+                        $('#save_result_info').html(res.success)
+                    }else if(res.code==401){
+                        $('#save_result_info').html(res.error)
+                    }else{
+                        $('#save_result_info').html(res.error)
+                    }
+                }
+            });
+        });
+        $('input[value="取消"]').on('click',function (event) {
+            window.location.href = '{%url "user_info"%}'
+        })
+    </script>
+</html>

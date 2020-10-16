@@ -1,0 +1,131 @@
+﻿{% load static %}
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <title></title>
+        <link rel="stylesheet" href="{% static 'css/global.css' %}">
+        <link rel="stylesheet" href="{% static 'css/global_color.css' %}">
+        <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+        <style type="text/css">
+            .page_ul li {
+                display: inline-block;
+            }
+        </style>
+    </head>
+    <body>
+        <!--Logo区域开始-->
+        <div id="header">
+            <img src="{% static 'images/logo.png' %}" alt="logo" class="left"/>
+            <a href="{%url 'show_index'%}">[退出]</a>
+        </div>
+        <!--Logo区域结束-->
+        <!--导航区域开始-->
+        <div id="navi">                        
+            <ul id="menu">
+                <li><a href="{%url 'show_index'%}" class="index_off"></a></li>
+                <li><a href="{%url 'show_role'%}" class="role_off"></a></li>
+                <li><a href="{%url 'show_admin'%}" class="admin_off"></a></li>
+                <li><a href="{%url 'fee_list'%}" class="fee_off"></a></li>
+                <li><a href="{% url 'account_list' %}" class="account_off"></a></li>
+                <li><a href="{% url 'service_list' %}" class="service_off"></a></li>
+                <li><a href="{% url 'bill_list' %}" class="bill_on"></a></li>
+                <li><a href="{% url 'report_list' %}" class="report_off"></a></li>
+                <li><a href="{%url 'user_info'%}" class="information_off"></a></li>
+                <li><a href="{%url 'user_pwd'%}" class="password_off"></a></li>
+            </ul>            
+        </div>
+        <!--导航区域结束-->
+        <!--主要区域开始-->
+        <div id="main">
+            <form action="" method="">
+                <!--查询-->
+                <div class="search_add">                        
+                    <div>账务账号：<span class="readonly width70">{{det.business.account.account_name}}</span></div>
+                    <div>OS 账号：<span class="readonly width100">{{det.business.user.osname}}</span></div>
+                    <div>服务器 IP：<span class="readonly width100">{{det.business.user.osip}}</span></div>
+                    <div>计费时间：<span class="readonly width70">{{time}}</span></div>
+                    <div>费用：<span class="readonly width70">{{fee}}</span></div>
+                    <input type="button" value="返回" style="width: 63px;" class="btn_add" onclick="javascript:history.back(-1);"/>
+                </div>  
+                <!--数据区域：用表格展示数据-->     
+                <div id="data">            
+                    <table id="datalist">
+                        <tr>
+                            <th class="width150">客户登录 IP</th>
+                            <th class="width150">登入时刻</th>
+                            <th class="width150">登出时刻</th>
+                            <th class="width100">时长（秒）</th>
+                            <th class="width150">费用</th>
+                            <th>资费</th>
+                        </tr>
+                        {% for det in details %}
+                        <tr>
+                            <td>{{det.login_ip}}</td>
+                            <td>{{det.login_time}}</td>
+                            <td>{{det.leave_time}}</td>
+                            <td>{{det.length_time}}</td>
+                            <td>{{det.fee}}</td>
+                            <td>{{det.business.postage.pg_type}}</td>
+                        </tr>
+                        {% endfor %}
+
+                    </table>
+                </div>
+                <!--分页-->
+                <div id="pages" class="page_ul">
+                    <li class="item"><a href="{% url 'bill_service_detail' id %}?page=1">首页</a></li>
+                        {#上一页按钮开始#}
+                        {# 如果当前页有上一页#}
+                        {% if details.has_previous %}
+                            {#  当前页的上一页按钮正常使用#}
+                            <li class="previous"><a href="{% url 'bill_service_detail' id %}?page={{ details.previous_page_number }}">上一页</a></li>
+                        {% else %}
+                            {# 当前页的不存在上一页时,上一页的按钮不可用#}
+                            <li class="previous disabled"><a href="#">上一页</a></li>
+                        {% endif %}
+                        {#上一页按钮结束#}
+                        {# 页码开始#}
+                        {% for num in paginator.page_range %}
+
+                            {% if num == currentPage %}
+                                <li><a class="current_page" href="{% url 'bill_service_detail' id %}?page={{ num }}">{{ num }}</a></li>
+                            {% else %}
+                                <li><a href="{% url 'bill_service_detail' id %}?page={{ num }}">{{ num }}</a></li>
+
+                            {% endif %}
+                        {% endfor %}
+                        {#页码结束#}
+                        {# 下一页按钮开始#}
+                        {% if details.has_next %}
+                            <li class="next"><a href="{% url 'bill_service_detail' id %}?page={{ details.next_page_number }}">下一页</a></li>
+                        {% else %}
+                            <li class="next disabled"><a href="#">下一页</a></li>
+                        {% endif %}
+                        {# 下一页按钮结束#}
+                        <li class="item"><a href="{% url 'bill_service_detail' id %}?page={{ paginator.num_pages }}">末页</a></li>
+        	        <!--<a href="#">上一页</a>-->
+                    <!--<a href="#" class="current_page">1</a>-->
+                    <!--<a href="#">2</a>-->
+                    <!--<a href="#">3</a>-->
+                    <!--<a href="#">4</a>-->
+                    <!--<a href="#">5</a>-->
+                    <!--<a href="#">下一页</a>-->
+                </div>                    
+            </form>
+        </div>
+        <!--主要区域结束-->
+        <div id="footer">
+            <p>[源自北美的技术，最优秀的师资，最真实的企业环境，最适用的实战项目]</p>
+           <p>版权所有(C)云科技有限公司 </p>
+        </div>
+    <script src="{%static 'js/jquery.min.js'%}"></script>
+    <script src="{%static 'js/jquery.cookie.js'%}"></script>
+    <script src="{% static 'js/powerview.js' %}"></script>
+    <script>
+        if(!$.cookie('user')){
+            window.location.href = "{%url 'show_login'%}";
+        }
+    </script>
+    </body>
+</html>

@@ -1,0 +1,13 @@
+$(function(){
+    $('.demo').hover(
+        function(){
+            document.getElementsByClassName('demo').innerHTML="红色";
+        },
+        function(){
+            document.getElementsByClassName('demo').innerHTML="变色";
+        }
+    );
+    $('#two').click(function(){
+        $('.demo1').toggle();
+    });
+});

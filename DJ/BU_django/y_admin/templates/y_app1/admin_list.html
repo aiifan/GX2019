@@ -1,0 +1,274 @@
+﻿{%load static%}
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <title></title>
+        <link type="text/css" rel="stylesheet" media="all" href="{%static 'styles/global.css'%}" />
+        <link type="text/css" rel="stylesheet" media="all" href="{%static 'styles/global_color.css'%}" />
+        <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+        <style type="text/css">
+            .page_up li {
+                display: inline-block;
+            }
+        </style>
+    </head>
+    <body>
+        <!--Logo区域开始-->
+        <div id="header">
+            <img src="{%static 'images/logo.png'%}" alt="logo" class="left"/>
+            <a href="#">[退出]</a>            
+        </div>
+        <!--Logo区域结束-->
+        <!--导航区域开始-->
+        <div id="navi">                        
+            <ul id="menu">
+                <li><a href="{%url 'show_index'%}" class="index_off"></a></li>
+                <li><a href="{%url 'show_role'%}" class="role_off"></a></li>
+                <li><a href="{%url 'show_admin'%}" class="admin_on"></a></li>
+                <li><a href="{%url 'fee_list'%}" class="fee_off"></a></li>
+                <li><a href="{% url 'account_list' %}" class="account_off"></a></li>
+                <li><a href="{% url 'service_list' %}" class="service_off"></a></li>
+                <li><a href="{% url 'bill_list' %}" class="bill_off"></a></li>
+                <li><a href="{% url 'report_list' %}" class="report_off"></a></li>
+                <li><a href="{%url 'user_info'%}" class="information_off"></a></li>
+                <li><a href="{%url 'user_pwd'%}" class="password_off"></a></li>
+            </ul>
+        </div>
+        <!--导航区域结束-->
+        <!--主要区域开始-->
+        <div id="main">
+            <form action="" method="post">
+                <!--查询-->
+                <div class="search_add">
+                    <div>
+                        模块：
+                        <select id="selModules" class="select_search">
+                            <option>全部</option>
+                            <option>角色管理</option>
+                            <option>管理员管理</option>
+                            <option>资费管理</option>
+                            <option>账务账号</option>
+                            <option>业务账号</option>
+                            <option>账单管理</option>
+                            <option>报表</option>
+                        </select>
+                    </div>
+                    <div>角色：<input name="serole" type="text" value="" class="text_search width200" /></div>
+                    <div><input type="button" value="搜索" class="btn_search"/></div>
+                    <input type="button" value="密码重置" class="btn_add" onclick="resetPwd();" />
+                    <input type="button" value="增加" class="btn_add" />
+                </div>
+                <!--删除和密码重置的操作提示-->
+                <div id="operate_result_info" class="operate_success">
+                    <img src="{%static 'images/close.png'%}" onclick="this.parentNode.style.display='none';" />
+                    <span id="info"></span><!--密码重置失败！数据并发错误。-->
+                </div> 
+                <!--数据区域：用表格展示数据-->     
+                <div id="data">            
+                    <table id="datalist">
+                        <tr>
+                            <th class="th_select_all">
+                                <input type="checkbox" onclick="selectAdmins(this);" />
+                                <span>全选</span>
+                            </th>
+                            <th>管理员ID</th>
+                            <th>姓名</th>
+                            <th>登录名</th>
+                            <th>电话</th>
+                            <th>电子邮件</th>
+                            <th>授权日期</th>
+                            <th class="width100">角色</th>
+                            <th>操作</th>
+                        </tr>
+                        {%for admin1 in admins%}
+                        <tr class="distr">
+                            <td class="cbox"><input type="checkbox"/></td>
+                            <td>{{admin1.adminid}}</td>
+                            <td>{{admin1.nickname}}</td>
+                            <td>{{admin1.username}}</td>
+                            <td>{{admin1.phone}}</td>
+                            <td>{{admin1.email}}</td>
+                            <td>{{admin1.ctime}}</td>
+                            <td>{{admin1.customrole}}</td>
+                            <td class="td_modi">
+                                <input type="button" value="修改" class="btn_modify" onclick="update(this,'{{admin1.adminid}}')"/>
+                                <input type="button" value="删除" class="btn_delete" onclick="deleteAdmin(this,'{{admin1.adminid}}')"/>
+                            </td>
+                        </tr>
+                    {%endfor%}
+                    </table>
+                </div>
+                <!--分页-->
+                <div id="pages" class="page_up">
+                        <li class="item"><a href="{% url 'show_admin' %}?page=1">首页</a></li>
+                        {#上一页按钮开始#}
+                        {# 如果当前页有上一页#}
+                        {% if admins.has_previous %}
+                            {#  当前页的上一页按钮正常使用#}
+                            <li class="previous"><a href="{% url 'show_admin' %}?page={{ admins.previous_page_number }}">上一页</a></li>
+                        {% else %}
+                            {# 当前页的不存在上一页时,上一页的按钮不可用#}
+                            <li class="previous disabled"><a href="#">上一页</a></li>
+                        {% endif %}
+                        {#上一页按钮结束#}
+                        {# 页码开始#}
+                        {% for num in paginator.page_range %}
+
+                            {% if num == currentPage %}
+                                <li class="item active"><a class="current_page" href="{% url 'show_admin' %}?page={{ num }}">{{ num }}</a></li>
+                            {% else %}
+                                <li class="item"><a href="{% url 'show_admin' %}?page={{ num }}">{{ num }}</a></li>
+
+                            {% endif %}
+                        {% endfor %}
+                        {#页码结束#}
+                        {# 下一页按钮开始#}
+                        {% if admins.has_next %}
+                            <li class="next"><a href="{% url 'show_admin' %}?page={{ admins.next_page_number }}">下一页</a></li>
+                        {% else %}
+                            <li class="next disabled"><a href="#">下一页</a></li>
+                        {% endif %}
+                        {# 下一页按钮结束#}
+                        <li class="item"><a href="{% url 'show_admin' %}?page={{ paginator.num_pages }}">末页</a></li>
+        	        <!--<a href="#">上一页</a>-->
+                    <!--<a href="#" class="current_page">1</a>-->
+                    <!--<a href="#">2</a>-->
+                    <!--<a href="#">3</a>-->
+                    <!--<a href="#">4</a>-->
+                    <!--<a href="#">5</a>-->
+                    <!--<a href="#">下一页</a>-->
+                </div>                    
+            </form>
+        </div>
+        <!--主要区域结束-->
+        <div id="footer">
+            <p>[源自北美的技术，最优秀的师资，最真实的企业环境，最适用的实战项目]</p>
+            <span>版权所有(C)云科技有限公司 </span>
+        </div>
+    </body>
+    <script src="{%static 'js/jquery.min.js'%}"></script>
+    <script src="{%static 'js/csrf.js'%}"></script>
+    <script src="{%static 'js/jquery.cookie.js'%}"></script>
+    <script src="{%static 'js/powerview.js'%}"></script>
+    <script language="javascript" type="text/javascript">
+        $('input[value="增加"]').on('click',function () {
+            window.location.href = '{%url "admin_add"%}'
+        });
+        //修改信息
+        function update(athis,aid) {
+            let link = '{%url "admin_modi"%}'+'?adminid='+aid;
+            window.location.href = link
+        }
+        //删除信息
+        function deleteAdmin(athis,aid) {
+            var r = window.confirm("确定要删除此管理员吗？");
+            document.getElementById("operate_result_info").style.display = "block";
+            if(r==true){
+                let paras = 'adminid='+aid;
+                csrf_yield();
+                $.ajax({
+                    url:'{%url "delete_admin"%}',
+                    type:'post',
+                    data:paras,
+                    success:function (res) {
+                        res = JSON.parse(res);
+                        if(res.code==200){
+                            $('#info').html(res.success);
+                            document.getElementById("operate_result_info").style.display = "block";
+                        }
+                    }
+                });
+            }else {
+                document.getElementById("operate_result_info").style.display = "none";
+            }
+            setTimeout(function(){
+                location.reload();
+            },2000);
+        }
+        //全选
+        function selectAdmins(inputObj) {
+            var inputArray = document.getElementById("datalist").getElementsByTagName("input");
+            for (var i = 1; i < inputArray.length; i++) {
+                if (inputArray[i].type == "checkbox") {
+                    inputArray[i].checked = inputObj.checked;
+                }
+            }
+        }
+        //重置密码
+        function resetPwd() {
+            obj = $('.cbox');
+            for(let i=0; i<=obj.length-1; i++){
+                let obj1 = obj.eq(i).next().html();
+                let obj2 = obj.eq(i).children().is(":checked");
+                if(obj2==true){
+                    let pas = 'adminid='+obj1;
+                    $.ajax({
+                        url:'{%url "reset_pwd"%}',
+                        type:'post',
+                        data:pas,
+                         success:function (res) {
+                            res = JSON.parse(res);
+                            if(res.code==200){
+                                $('#info').html(res.success);
+                                document.getElementById("operate_result_info").style.display = "block";
+                            }
+                        }
+                    });
+                }else {
+                    $('#info').html('请选择起码一条数据');
+                    document.getElementById("operate_result_info").style.display = "block";
+                }
+            }
+            setTimeout(function(){
+                location.reload();
+            },2000);
+        }
+        //显示角色详细信息
+        $('input[value="搜索"]').on('click',function (event) {
+            event.preventDefault();
+            let paras = 'power='+$('#selModules').val()+'&customrole='+$('input[name="serole"]').val();
+            $.ajax({
+                url:'{%url "search_admin"%}',
+                type:'post',
+                data:paras,
+                success:function (res) {
+                    res = JSON.parse(res);
+                    if(res.code==200){
+                        //搜索成功
+                        $('.distr').css({
+                            display:'none'
+                        });
+                        $('.data').remove();
+                        for(let i=0; i<=res.info.length-1; i++){
+                            let str = `
+                            <tr class="data">
+                                <td><input type="checkbox"/></td>
+                                <td>${res.info[i].adminid}</td>
+                                <td>${res.info[i].nickname}</td>
+                                <td>${res.info[i].username}</td>
+                                <td>${res.info[i].phone}</td>
+                                <td>${res.info[i].email}</td>
+                                <td>${res.info[i].ctime}</td>
+                                <td>${res.info[i].customrole}</td>
+                                <td>
+                                    <input type="button" value="修改" class="btn_modify" onclick="update(this,'{{admin1.adminid}}')"/>
+                                    <input type="button" value="删除" class="btn_delete" onclick="deleteAdmin(this,'{{admin1.adminid}}')"/>
+                                </td>
+                            </tr>
+                            `;
+                            $('table').append(str)
+                        }
+                    }else if(res.code==400) {
+                        $('#info').html(res.error);
+                        document.getElementById("operate_result_info").style.display = "block";
+                    }else {
+                        $('#info').html('请填写搜索范围');
+                        document.getElementById("operate_result_info").style.display = "block";
+                    }
+                }
+            })
+        })
+
+    </script>
+</html>

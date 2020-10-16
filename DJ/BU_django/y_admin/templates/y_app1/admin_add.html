@@ -1,0 +1,167 @@
+﻿{%load static%}
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <title>云科技</title>
+        <link type="text/css" rel="stylesheet" media="all" href="{%static 'styles/global.css'%}" />
+        <link type="text/css" rel="stylesheet" media="all" href="{%static 'styles/global_color.css'%}" />
+        <script language="javascript" type="text/javascript">
+            //保存成功的提示消息
+            function showResult() {
+                showResultDiv(true);
+                window.setTimeout("showResultDiv(false);", 3000);
+            }
+            function showResultDiv(flag) {
+                var divResult = document.getElementById("save_result_info");
+                if (flag)
+                    divResult.style.display = "block";
+                else
+                    divResult.style.display = "none";
+            }
+        </script>
+    </head>
+    <body>
+        <!--Logo区域开始-->
+        <div id="header">
+            <img src="{%static 'images/logo.png'%}" alt="logo" class="left"/>
+            <a href="#">[退出]</a>            
+        </div>
+        <!--Logo区域结束-->
+        <!--导航区域开始-->
+        <div id="navi">
+            <ul id="menu">
+                <li><a href="{%url 'show_index'%}" class="index_off"></a></li>
+                <li><a href="{%url 'show_role'%}" class="role_off"></a></li>
+                <li><a href="{%url 'show_admin'%}" class="admin_on"></a></li>
+                <li><a href="{%url 'fee_list'%}" class="fee_off"></a></li>
+                <li><a href="{% url 'account_list' %}" class="account_off"></a></li>
+                <li><a href="{% url 'service_list' %}" class="service_off"></a></li>
+                <li><a href="{% url 'bill_list' %}" class="bill_off"></a></li>
+                <li><a href="{% url 'report_list' %}" class="report_off"></a></li>
+                <li><a href="{%url 'user_info'%}" class="information_off"></a></li>
+                <li><a href="{%url 'user_pwd'%}" class="password_off"></a></li>
+            </ul>
+        </div>
+        <!--导航区域结束-->
+        <!--主要区域开始-->
+        <div id="main">            
+            <div id="save_result_info" class="save_success"></div>
+            <form action="" method="" class="main_form">
+                    <div class="text_info clearfix"><span>姓名：</span></div>
+                    <div class="input_info">
+                        <input name="nickname" type="text" />
+                        <span class="required">*</span>
+                        <div class="validate_msg_long">20长度以内的汉字、字母、数字的组合</div>
+                    </div>
+                    <div class="text_info clearfix"><span>管理员账号：</span></div>
+                    <div class="input_info">
+                        <input name="username" type="text"  />
+                        <span class="required">*</span>
+                        <div class="validate_msg_long">30长度以内的字母、数字和下划线的组合</div>
+                    </div>
+                    <div class="text_info clearfix"><span>密码：</span></div>
+                    <div class="input_info">
+                        <input name="password" type="password"  />
+                        <span class="required">*</span>
+                        <div class="validate_msg_long">30长度以内的字母、数字和下划线的组合</div>
+                    </div>
+                    <div class="text_info clearfix"><span>重复密码：</span></div>
+                    <div class="input_info">
+                        <input name="password1" type="password"  />
+                        <span class="required">*</span>
+                        <div class="validate_msg_long">两次密码必须相同</div>
+                    </div>      
+                    <div class="text_info clearfix"><span>电话：</span></div>
+                    <div class="input_info">
+                        <input name="phone" type="text" class="width200"/>
+                        <span class="required">*</span>
+                        <div class="validate_msg_medium">正确的电话号码格式：手机或固话</div>
+                    </div>
+                    <div class="text_info clearfix"><span>Email：</span></div>
+                    <div class="input_info">
+                        <input name="email" type="text" class="width200"/>
+                        <span class="required">*</span>
+                        <div class="validate_msg_medium">50长度以内，正确的 email 格式</div>
+                    </div>
+                    <div class="text_info clearfix"><span>角色名称：</span></div>
+                    <div class="input_info">
+                        <input name="myrole" type="text" class="width200"/>
+                        <span class="required">*</span>
+                        <div class="validate_msg_medium">请填写已存在的角色名称</div>
+                    </div>
+                    <!--<div class="text_info clearfix"><span>角色：</span></div>-->
+                    <!--<div class="input_info_high">-->
+                        <!--<div class="input_info_scroll">-->
+                            <!--<ul>-->
+                                <!--<li><input value="角色管理" type="checkbox" />角色管理员</li>-->
+                                <!--<li><input value="管理员管理" type="checkbox" />管理员管理</li>-->
+                                <!--<li><input value="资费管理" type="checkbox" />资费管理员</li>-->
+                                <!--<li><input value="账务账号管理" type="checkbox" />账务账号管理员</li>-->
+                                <!--<li><input value="业务账号管理" type="checkbox" />业务账号管理员</li>-->
+                                <!--<li><input value="账单管理" type="checkbox" />账单管理员</li>-->
+                                <!--<li><input value="报表管理员" type="checkbox" />报表管理员</li>-->
+                            <!--</ul>-->
+                        <!--</div>-->
+                        <!--<span class="required">*</span>-->
+                        <!--<div class="validate_msg_tiny error_msg">若无自定义名称,至少选择一个</div>-->
+                    <!--</div>-->
+                    <div class="button_info clearfix">
+                        <input type="button" value="保存" class="btn_save" onclick="showResult();" />
+                        <input type="button" value="取消" class="btn_save" />
+                    </div>
+                </form>  
+        </div>
+        <!--主要区域结束-->
+        <div id="footer">
+            <span>[源自北美的技术，最优秀的师资，最真实的企业环境，最适用的实战项目]</span>
+            <br />
+            <span>版权所有(C)云科技有限公司 </span>
+        </div>
+    </body>
+    <script src="{%static 'js/jquery.min.js'%}"></script>
+    <script src="{%static 'js/csrf.js'%}"></script>
+    <script src="{%static 'js/jquery.cookie.js'%}"></script>
+    <script src="{%static 'js/powerview.js'%}"></script>
+    <script src="{%static 'js/nowtime.js'%}"></script>
+    <script type="text/javascript">
+        if(!$.cookie('user')){
+        window.location.href = "{%url 'show_login'%}"
+        }
+        $('input[value="保存"]').on('click',function (event) {
+            event.preventDefault();
+            let paras = $('form').serialize();
+            obj = $('input[type="checkbox"]');
+            check__val = [];
+            for(k in obj){
+                if(obj[k].checked)
+                    check__val.push(obj[k].value);
+            }
+            getCurrentDate();
+            paras += "&ctime="+nowtime;
+            $.ajax({
+                url:'{%url "add_admin"%}',
+                type:'post',
+                data:paras,
+                success:function (res) {
+                    res = JSON.parse(res);
+                    if(res.code==200){
+                        $('#save_result_info').html(res.success)
+                    }else if(res.code==400){
+                        $('#save_result_info').html(res.error)
+                    }else if(res.code==401) {
+                        $('#save_result_info').html(res.error)
+                    }else if(res.code==402){
+                        $('#save_result_info').html(res.error)
+                    }else {
+                        $('#save_result_info').html(res.error)
+                    }
+                }
+            });
+        });
+        $('input[value="取消"]').on('click',function (event) {
+            event.preventDefault();
+            window.location.href = '{%url "show_admin"%}'
+        })
+    </script>
+</html>

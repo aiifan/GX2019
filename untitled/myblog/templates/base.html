@@ -1,0 +1,20 @@
+<div class="fix-main clearfix pr" id="fix-main" _hover-ignore="1"> <a href="/" class="index-logo">
+    <img src="static/picture/black-logo.png" alt="拓普Python学院,Python!"></a>
+<nav class="nav fl">
+<ul id="fix-list" class="fix-list clearfix">
+
+<li id="menu-item-24086" class="menu-item"><a href="/">首页</a></li>
+
+<li id="menu-item-117720" class="menu-item">
+ <a href="/list-1.html">Django</a>
+</li>
+{% for category in allcategory %}
+<li id="menu-item-117720" class="menu-iten">
+    <a href="{% url 'index' %}list-{{ category.id }}.html">{{ category.name }}</a>
+{% endfor %}
+</li>
+<li id="menu-item-24086" class="menu-item"><a href="/about/">关于博主</a></li>
+
+</ul>
+
+</nav>

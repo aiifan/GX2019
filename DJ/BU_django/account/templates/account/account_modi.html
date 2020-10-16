@@ -1,0 +1,197 @@
+﻿{% load static %}
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <title>云科技</title>
+        <link rel="stylesheet" href="{% static 'css/global.css' %}">
+        <link rel="stylesheet" href="{% static 'css/global_color.css' %}">
+    </head>
+    <body>
+        <!--主要区域开始-->
+        <div>
+            <!--保存成功或者失败的提示消息-->          
+            <div id="save_result_info" class="save_fail">保存失败，旧密码错误！</div>
+            <form action="" method="" class="main_form">
+                    <!--必填项-->
+                    <div class="text_info clearfix"><span>账务账号ID：</span></div>
+                    <div class="input_info">
+                        <input type="text" value="{{user.account.account_id}}" readonly class="readonly" />
+                    </div>
+                    <div class="text_info clearfix"><span>姓名：</span></div>
+                    <div class="input_info">
+                        <input type="text" name="name" value="{{user.nickname}}" />
+                        <span class="required">*</span>
+                        <div class="validate_msg_long error_msg name" style="display: none;">20长度以内的汉字、字母和数字的组合</div>
+                    </div>
+                    <div class="text_info clearfix"><span>身份证：</span></div>
+                    <div class="input_info">
+                        <input type="text" name="ident" value="{{user.ident}}" readonly class="readonly" />
+                    </div>
+                    <div class="text_info clearfix"><span>登录账号：</span></div>
+                    <div class="input_info">
+                        <input type="text" value="{{user.osname}}" readonly class="readonly"  />
+                    </div>
+                    <div class="text_info clearfix"><span>电话：</span></div>
+                    <div class="input_info">
+                        <input type="text" name="tel" class="width200" value="{{user.tel}}"/>
+                        <span class="required">*</span>
+                        <div class="validate_msg_medium error_msg tel" style="display: none">正确的电话号码格式：手机或固话</div>
+                    </div>
+                    <div class="text_info clearfix"><span>生日：</span></div>
+                    <div class="input_info">
+                        <input type="text" value="{{user.birth}}" readonly class="readonly" />
+                    </div>
+                    <div class="text_info clearfix"><span>Email：</span></div>
+                    <div class="input_info">
+                        <input type="text" name="email" class="width200" value="{{user.Email}}"/>
+                        <div class="validate_msg_medium">50长度以内，合法的 Email 格式</div>
+                    </div> 
+                    <div class="text_info clearfix"><span>职业：</span></div>
+                    <div class="input_info">
+                        <input type="text" class="zhiye" style="display: none" value="{{user.occupation}}">
+                        <select name="zhiye">
+                            <option>干部</option>
+                            <option selected="selected">学生</option>
+                            <option>技术人员</option>
+                            <option>其他</option>
+                        </select>                        
+                    </div>
+                    <div class="text_info clearfix"><span>性别：</span></div>
+                    <div class="input_info fee_type">
+                        <input type="text" style="display:none;" class="input3" value="{{user.sex}}">
+                        <input type="radio" name="radSex" class="sex1" checked="checked" id="female"/>
+                        <label for="female">女</label>
+                        <input type="radio" name="radSex" class="sex2" id="male"/>
+                        <label for="male">男</label>
+                    </div> 
+                    <div class="text_info clearfix"><span>通信地址：</span></div>
+                    <div class="input_info">
+                        <input type="text" name="addr" class="width350" value="{{user.addr}}"/>
+                        <div class="validate_msg_tiny">50长度以内</div>
+                    </div> 
+                    <div class="text_info clearfix"><span>邮编：</span></div>
+                    <div class="input_info">
+                        <input type="text" name="youbian" value="{{user.youbian}}"/>
+                        <div class="validate_msg_long">6位数字</div>
+                    </div> 
+                    <div class="text_info clearfix"><span>QQ：</span></div>
+                    <div class="input_info">
+                        <input type="text" name="qq" value="{{user.qq}}"/>
+                        <div class="validate_msg_long">5到13位数字</div>
+                    </div>                
+                    <!--操作按钮-->
+                    <div class="button_info clearfix">
+                        <input type="button" value="保存" class="btn_save receive"/>
+                        <input type="button" value="取消" class="btn_save not" />
+                    </div>
+                </form>  
+        </div>
+        <!--主要区域结束-->
+        <div id="footer">
+            <span>[源自北美的技术，最优秀的师资，最真实的企业环境，最适用的实战项目]</span>
+            <br />
+            <span>版权所有(C)云科技有限公司 </span>
+        </div>
+    <script src="{% static 'js/jquery-3.3.1.min.js' %}"></script>
+    <script src="{% static 'js/csrf.js' %}"></script>
+    <script src="{% static 'js/powerview.js' %}"></script>
+    <script src="{%static 'js/jquery.cookie.js'%}"></script>
+    <script src="{%static 'js/jquery.min.js'%}"></script>
+    <script>
+        csrf_yield();
+        // 点击保存数据
+        $('.receive').on('click', function () {
+            let data = $('form').serialize();
+            $.ajax({
+                url: '{% url "update" %}',
+                type: 'post',
+                data: data,
+                success:function (ev) {
+                    ev = JSON.parse(ev);
+                    if(ev.code === 200){
+                        let a = confirm('修改成功');
+                        if(a){
+                            window.location.href = '{% url "account_list" %}';
+                        }
+                    }else{
+                        alert('修改失败');
+                    }
+                }
+            })
+        });
+        // 点击取消
+        $('.not').on('click', function () {
+            window.location.href = '{% url "account_list" %}';
+        });
+        // 选中初始职位
+        for(let i=0;i<$('select[name="zhiye"] option').length;i++) {
+            $('select[name="zhiye"] option').eq(i).removeAttr('selected', '');
+            if($('select[name="zhiye"] option').eq(i).html()===$('.zhiye').val()) {
+                $('select[name="zhiye"] option').eq(i).attr('selected', 'selected');
+            }
+        }
+        //选中初始性别
+        if($('.input3').val() === '男') {
+            $('.sex2').attr('checked','checked');
+            $('.sex1').attr('checked');
+        }else {
+            $('.sex1').attr('checked','checked');
+            $('.sex2').attr('checked');
+        }
+        // 字段检查
+         // 电话验证
+        yanzheng(isPhoneNo, 'input[name="tel"]', '.tel');
+        // 用户名验证
+        yanzheng(isChinaName, 'input[name="name"]', '.name');
+        function yanzheng(func, input, css) {
+            $(input).focus(function () {
+                if(func($(input).val())) {
+                    $(css).css({'display':'none'});
+                }else {
+                    $(css).css({'display': ''});
+                }
+            });
+            $(input).blur(function () {
+                if(func($(input).val())) {
+                    $(css).css({'display':'none'});
+                }else {
+                    $(css).css({'display': ''});
+                }
+            });
+        }
+        // 验证中文名称
+        function isChinaName(name) {
+             var pattern = /^[\u4E00-\u9FA51-9a-zA-Z]{1,20}$/;
+             return pattern.test(name);
+        }
+        // 验证手机号
+        function isPhoneNo(phone) {
+             var pattern = /^1[34578]\d{9}$/;
+             return pattern.test(phone);
+        }
+
+
+        function showResult() {
+            showResultDiv(true);
+            window.setTimeout("showResultDiv(false);", 3000);
+        }
+        function showResultDiv(flag) {
+            var divResult = document.getElementById("save_result_info");
+            if (flag)
+                divResult.style.display = "block";
+            else
+                divResult.style.display = "none";
+        }
+
+        //显示修改密码的信息项
+        function showPwd(chkObj) {
+            if (chkObj.checked)
+                document.getElementById("divPwds").style.display = "block";
+            else
+                document.getElementById("divPwds").style.display = "none";
+        }
+
+    </script>
+    </body>
+</html>

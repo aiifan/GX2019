@@ -1,0 +1,164 @@
+﻿{%load static%}
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <title></title>
+        <link type="text/css" rel="stylesheet" media="all" href="{%static 'styles/global.css'%}" />
+        <link type="text/css" rel="stylesheet" media="all" href="{%static 'styles/global_color.css'%}" />
+        <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+        <style type="text/css">
+            .page_ul li{
+                display: inline-block;
+            }
+        </style>
+    </head>
+    <body>
+        <!--Logo区域开始-->
+        <div id="header">
+            <img src="{%static 'images/logo.png'%}" alt="logo" class="left"/>
+            <a href="{%url 'show_index'%}">[退出]</a>
+        </div>
+        <!--Logo区域结束-->
+        <!--导航区域开始-->
+        <div id="navi">
+            <ul id="menu">
+                <li><a href="{%url 'show_index'%}" class="index_off"></a></li>
+                <li><a href="{%url 'show_role'%}" class="role_on"></a></li>
+                <li><a href="{%url 'show_admin'%}" class="admin_off"></a></li>
+                <li><a href="{%url 'fee_list'%}" class="fee_off"></a></li>
+                <li><a href="{% url 'account_list' %}" class="account_off"></a></li>
+                <li><a href="{% url 'service_list' %}" class="service_off"></a></li>
+                <li><a href="{% url 'bill_list' %}" class="bill_off"></a></li>
+                <li><a href="{% url 'report_list' %}" class="report_off"></a></li>
+                <li><a href="{%url 'user_info'%}" class="information_off"></a></li>
+                <li><a href="{%url 'user_pwd'%}" class="password_off"></a></li>
+            </ul>
+        </div>
+        <!--导航区域结束-->
+        <!--主要区域开始-->
+        <div id="main">
+            <form action="" method="">
+                <!--查询-->
+                <div class="search_add">
+                    <input type="button" value="增加" class="btn_add"/>
+                </div>
+                <!--删除的操作提示-->
+                <div id="operate_result_info" class="operate_success">
+                    <img src="{%static 'images/close.png'%}" onclick="this.parentNode.style.display='none';" />
+                    删除成功！
+                </div> <!--删除错误！该角色被使用，不能删除。-->
+                <!--数据区域：用表格展示数据-->
+                <div id="data">
+                    <table id="datalist">
+                        <tr>
+                            <th>角色 ID</th>
+                            <th>角色名称</th>
+                            <th class="width600">拥有的权限</th>
+                            <th class="td_modi"></th>
+                        </tr>
+                    {% for role in roles %}
+                        <tr>
+                            <td>{{role.roleid}}</td>
+                            <td>{{role.rolename}}</td>
+                            <td>{{role.power}}</td>
+                            <td>
+                                <input type="button" value="修改" class="btn_modify" onclick="update(this,'{{role.roleid}}')"/>
+                                <input type="button" value="删除" class="btn_delete" onclick="deleteRole(this,'{{role.roleid}}')"/>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </table>
+                </div>
+                <!--分页-->
+                <div id="pages" class="page_ul">
+                    <!--<ul class="pagination" id="pager">-->
+                        <li class="item"><a href="{% url 'show_role' %}?page=1">首页</a></li>
+                        {#上一页按钮开始#}
+                        {# 如果当前页有上一页#}
+                        {% if roles.has_previous %}
+                            {#  当前页的上一页按钮正常使用#}
+                            <li class="previous"><a href="{% url 'show_role' %}?page={{ roles.previous_page_number }}">上一页</a></li>
+                        {% else %}
+                            {# 当前页的不存在上一页时,上一页的按钮不可用#}
+                            <li class="previous disabled"><a href="#">上一页</a></li>
+                        {% endif %}
+                        {#上一页按钮结束#}
+                        {# 页码开始#}
+                        {% for num in paginator.page_range %}
+
+                            {% if num == currentPage %}
+                                <li class="item active"><a class="current_page" href="{% url 'show_role' %}?page={{ num }}">{{ num }}</a></li>
+                            {% else %}
+                                <li class="item"><a href="{% url 'show_role' %}?page={{ num }}">{{ num }}</a></li>
+
+                            {% endif %}
+                        {% endfor %}
+                        {#页码结束#}
+                        {# 下一页按钮开始#}
+                        {% if roles.has_next %}
+                            <li class="next"><a href="{% url 'show_role' %}?page={{ roles.next_page_number }}">下一页</a></li>
+                        {% else %}
+                            <li class="next disabled"><a href="#">下一页</a></li>
+                        {% endif %}
+                        {# 下一页按钮结束#}
+                        <li class="item"><a href="{% url 'show_role' %}?page={{ paginator.num_pages }}">末页</a></li>
+                    <!--</ul>-->
+
+        	        <!--<a href="#">上一页</a>-->
+                    <!--<a href="#" class="current_page">1</a>-->
+                    <!--<a href="#">2</a>-->
+                    <!--<a href="#">3</a>-->
+                    <!--<a href="#">4</a>-->
+                    <!--<a href="#">5</a>-->
+                    <!--<a href="#">下一页</a>-->
+                </div>
+            </form>
+        </div>
+        <!--主要区域结束-->
+        <div id="footer">
+            <p>[源自北美的技术，最优秀的师资，最真实的企业环境，最适用的实战项目]</p>
+            <p>版权所有(C)云科技有限公司 </p>
+        </div>
+    </body>
+    <script src="{%static 'js/jquery.min.js'%}"></script>
+    <script src="{%static 'js/csrf.js'%}"></script>
+    <script src="{%static 'js/jquery.cookie.js'%}"></script>
+    <script src="{%static 'js/powerview.js'%}"></script>
+    <script type="text/javascript">
+        if(!$.cookie('user')){
+        window.location.href = "{%url 'show_login'%}"
+        }
+        $('input[value="增加"]').on('click',function () {
+            window.location.href = '{%url "role_add"%}'
+        });
+        function update(rthis,rid) {
+            let link = '{%url "role_modi"%}'+'?roleid='+rid;
+            window.location.href = link
+        }
+        function deleteRole(rthis,rid) {
+            var r = window.confirm("确定要删除此角色吗？");
+            document.getElementById("operate_result_info").style.display = "block";
+            if(r==true){
+                let paras = 'roleid='+rid;
+                csrf_yield();
+                $.ajax({
+                    url:'{%url "delete_role"%}',
+                    type:'post',
+                    data:paras,
+                    success:function (res) {
+                        res = JSON.parse(res);
+                        if(res==200){
+                            document.getElementById("operate_result_info").style.display = "block";
+                        }
+                    }
+                });
+            }else {
+                document.getElementById("operate_result_info").style.display = "none";
+            }
+            setTimeout(function(){
+                location.reload();
+            },2000);
+        }
+    </script>
+</html>
